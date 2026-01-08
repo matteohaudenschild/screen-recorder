@@ -1,41 +1,138 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Einfacher Screen Recorder</title>
+<title>Screen Recorder – Simple & Free</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
+:root {
+    --bg: #0f0f0f;
+    --card: #181818;
+    --accent: #4f46e5;
+    --text: #ffffff;
+    --muted: #a1a1aa;
+    --danger: #dc2626;
+}
+
+* {
+    box-sizing: border-box;
+}
+
 body {
-    background: #111;
-    color: #fff;
-    font-family: Arial, sans-serif;
-    text-align: center;
-    padding: 30px;
+    margin: 0;
+    background: radial-gradient(circle at top, #1a1a1a, #0a0a0a);
+    color: var(--text);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
 }
-button {
-    font-size: 18px;
-    padding: 10px 20px;
-    margin: 10px;
-    cursor: pointer;
-}
-video {
-    width: 90%;
+
+.container {
+    background: var(--card);
+    width: 100%;
     max-width: 900px;
+    padding: 32px;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+}
+
+h1 {
+    margin-top: 0;
+    font-size: 2rem;
+}
+
+p {
+    color: var(--muted);
+    line-height: 1.6;
+}
+
+.controls {
+    margin-top: 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+button {
+    border: none;
+    border-radius: 10px;
+    padding: 14px 22px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform .1s ease, opacity .2s ease;
+}
+
+button:hover {
+    transform: translateY(-1px);
+}
+
+button:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.start {
+    background: var(--accent);
+    color: white;
+}
+
+.stop {
+    background: var(--danger);
+    color: white;
+}
+
+.status {
+    margin-top: 16px;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+video {
+    margin-top: 24px;
+    width: 100%;
+    border-radius: 12px;
+    background: black;
+    display: none;
+}
+
+.footer {
     margin-top: 20px;
-    border: 2px solid #444;
+    font-size: 13px;
+    color: var(--muted);
+    text-align: center;
 }
 </style>
 </head>
 
 <body>
 
-<h1>🎥 Screen Recorder (mit Ton)</h1>
+<div class="container">
+    <h1>🎥 Screen Recorder</h1>
+    <p>
+        Record your screen and microphone directly in your browser.
+        No installation. No upload. Everything stays on your device.
+    </p>
 
-<button id="startBtn">Aufnahme starten</button>
-<button id="stopBtn" disabled>Aufnahme stoppen</button>
+    <div class="controls">
+        <button id="startBtn" class="start">Start Recording</button>
+        <button id="stopBtn" class="stop" disabled>Stop Recording</button>
+    </div>
 
-<br>
-<video id="preview" controls></video>
+    <div id="status" class="status">
+        Ready to record.
+    </div>
+
+    <video id="preview" controls></video>
+
+    <div class="footer">
+        Works best in Chrome or Edge · HTTPS required
+    </div>
+</div>
 
 <script>
 let mediaRecorder;
@@ -44,21 +141,19 @@ let recordedChunks = [];
 const startBtn = document.getElementById("startBtn");
 const stopBtn = document.getElementById("stopBtn");
 const preview = document.getElementById("preview");
+const statusText = document.getElementById("status");
 
 startBtn.onclick = async () => {
     try {
-        // Bildschirm auswählen
         const screenStream = await navigator.mediaDevices.getDisplayMedia({
             video: { frameRate: 30 },
-            audio: true   // Tab-Audio (wenn erlaubt)
+            audio: true
         });
 
-        // Mikrofon
         const micStream = await navigator.mediaDevices.getUserMedia({
             audio: true
         });
 
-        // Alle Tracks kombinieren
         const tracks = [
             ...screenStream.getVideoTracks(),
             ...screenStream.getAudioTracks(),
@@ -78,23 +173,25 @@ startBtn.onclick = async () => {
             const blob = new Blob(recordedChunks, { type: "video/webm" });
             const url = URL.createObjectURL(blob);
 
-            preview.srcObject = null;
             preview.src = url;
+            preview.style.display = "block";
             preview.play();
 
-            // Automatischer Download
             const a = document.createElement("a");
             a.href = url;
             a.download = "screen-recording.webm";
             a.click();
+
+            statusText.textContent = "Recording finished. Video downloaded.";
         };
 
         mediaRecorder.start();
         startBtn.disabled = true;
         stopBtn.disabled = false;
+        statusText.textContent = "Recording… Choose what to share.";
 
     } catch (err) {
-        alert("Fehler: " + err.message);
+        statusText.textContent = "Error: " + err.message;
     }
 };
 
@@ -102,6 +199,7 @@ stopBtn.onclick = () => {
     mediaRecorder.stop();
     startBtn.disabled = false;
     stopBtn.disabled = true;
+    statusText.textContent = "Processing recording…";
 };
 </script>
 
