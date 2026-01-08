@@ -8,12 +8,12 @@
 
 <style>
 :root {
-    --bg: #0f0f0f;
-    --card: #181818;
-    --accent: #4f46e5;
+    --bg: #0b0b0b;
+    --card: #161616;
+    --accent: #6366f1;
+    --danger: #ef4444;
     --text: #ffffff;
     --muted: #a1a1aa;
-    --danger: #dc2626;
 }
 
 * {
@@ -22,22 +22,22 @@
 
 body {
     margin: 0;
-    background: radial-gradient(circle at top, #1a1a1a, #0a0a0a);
+    min-height: 100vh;
+    background: radial-gradient(circle at top, #1c1c1c, #0b0b0b);
     color: var(--text);
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     display: flex;
-    justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    justify-content: center;
 }
 
 .container {
-    background: var(--card);
     width: 100%;
     max-width: 900px;
+    background: var(--card);
     padding: 32px;
-    border-radius: 16px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    border-radius: 18px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.7);
 }
 
 h1 {
@@ -51,20 +51,20 @@ p {
 }
 
 .controls {
-    margin-top: 24px;
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
+    margin-top: 24px;
 }
 
 button {
-    border: none;
-    border-radius: 10px;
     padding: 14px 22px;
     font-size: 16px;
     font-weight: 600;
+    border-radius: 12px;
+    border: none;
     cursor: pointer;
-    transition: transform .1s ease, opacity .2s ease;
+    transition: transform .15s ease, opacity .2s ease;
 }
 
 button:hover {
@@ -92,19 +92,25 @@ button:disabled {
     color: var(--muted);
 }
 
+.notice {
+    margin-top: 12px;
+    font-size: 13px;
+    color: #fbbf24;
+}
+
 video {
-    margin-top: 24px;
     width: 100%;
-    border-radius: 12px;
+    margin-top: 24px;
+    border-radius: 14px;
     background: black;
     display: none;
 }
 
 .footer {
-    margin-top: 20px;
-    font-size: 13px;
-    color: var(--muted);
+    margin-top: 22px;
+    font-size: 12px;
     text-align: center;
+    color: var(--muted);
 }
 </style>
 </head>
@@ -114,8 +120,8 @@ video {
 <div class="container">
     <h1>🎥 Screen Recorder</h1>
     <p>
-        Record your screen and microphone directly in your browser.
-        No installation. No upload. Everything stays on your device.
+        Record your screen and browser audio directly in your browser.
+        No installation. No uploads. Everything stays on your device.
     </p>
 
     <div class="controls">
@@ -123,14 +129,16 @@ video {
         <button id="stopBtn" class="stop" disabled>Stop Recording</button>
     </div>
 
-    <div id="status" class="status">
-        Ready to record.
+    <div id="status" class="status">Ready to record.</div>
+    <div class="notice">
+        🔊 To record system sound, select a <b>browser tab</b> and enable
+        <b>“Share tab audio”</b>.
     </div>
 
     <video id="preview" controls></video>
 
     <div class="footer">
-        Works best in Chrome or Edge · HTTPS required
+        Works best in Chrome / Edge · HTTPS required
     </div>
 </div>
 
@@ -150,13 +158,24 @@ startBtn.onclick = async () => {
             audio: true
         });
 
+        const hasTabAudio = screenStream.getAudioTracks().length > 0;
+
         const micStream = await navigator.mediaDevices.getUserMedia({
             audio: true
         });
 
+        if (!hasTabAudio) {
+            alert(
+                "IMPORTANT:\n\n" +
+                "To record system sound, please select a BROWSER TAB\n" +
+                "and enable 'Share tab audio'.\n\n" +
+                "Only microphone audio will be recorded."
+            );
+        }
+
         const tracks = [
             ...screenStream.getVideoTracks(),
-            ...screenStream.getAudioTracks(),
+            ...(hasTabAudio ? screenStream.getAudioTracks() : []),
             ...micStream.getAudioTracks()
         ];
 
@@ -182,13 +201,13 @@ startBtn.onclick = async () => {
             a.download = "screen-recording.webm";
             a.click();
 
-            statusText.textContent = "Recording finished. Video downloaded.";
+            statusText.textContent = "Recording finished. File downloaded.";
         };
 
         mediaRecorder.start();
         startBtn.disabled = true;
         stopBtn.disabled = false;
-        statusText.textContent = "Recording… Choose what to share.";
+        statusText.textContent = "Recording… Make sure tab audio is enabled.";
 
     } catch (err) {
         statusText.textContent = "Error: " + err.message;
