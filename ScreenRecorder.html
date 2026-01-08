@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Einfacher Screen Recorder</title>
+
+<style>
+body {
+    background: #111;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 30px;
+}
+button {
+    font-size: 18px;
+    padding: 10px 20px;
+    margin: 10px;
+    cursor: pointer;
+}
+video {
+    width: 90%;
+    max-width: 900px;
+    margin-top: 20px;
+    border: 2px solid #444;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🎥 Screen Recorder (mit Ton)</h1>
+
+<button id="startBtn">Aufnahme starten</button>
+<button id="stopBtn" disabled>Aufnahme stoppen</button>
+
+<br>
+<video id="preview" controls></video>
+
+<script>
+let mediaRecorder;
+let recordedChunks = [];
+
+const startBtn = document.getElementById("startBtn");
+const stopBtn = document.getElementById("stopBtn");
+const preview = document.getElementById("preview");
+
+startBtn.onclick = async () => {
+    try {
+        // Bildschirm auswählen
+        const screenStream = await navigator.mediaDevices.getDisplayMedia({
+            video: { frameRate: 30 },
+            audio: true   // Tab-Audio (wenn erlaubt)
+        });
+
+        // Mikrofon
+        const micStream = await navigator.mediaDevices.getUserMedia({
+            audio: true
+        });
+
+        // Alle Tracks kombinieren
+        const tracks = [
+            ...screenStream.getVideoTracks(),
+            ...screenStream.getAudioTracks(),
+            ...micStream.getAudioTracks()
+        ];
+
+        const combinedStream = new MediaStream(tracks);
+
+        recordedChunks = [];
+        mediaRecorder = new MediaRecorder(combinedStream);
+
+        mediaRecorder.ondataavailable = e => {
+            if (e.data.size > 0) recordedChunks.push(e.data);
+        };
+
+        mediaRecorder.onstop = () => {
+            const blob = new Blob(recordedChunks, { type: "video/webm" });
+            const url = URL.createObjectURL(blob);
+
+            preview.srcObject = null;
+            preview.src = url;
+            preview.play();
+
+            // Automatischer Download
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "screen-recording.webm";
+            a.click();
+        };
+
+        mediaRecorder.start();
+        startBtn.disabled = true;
+        stopBtn.disabled = false;
+
+    } catch (err) {
+        alert("Fehler: " + err.message);
+    }
+};
+
+stopBtn.onclick = () => {
+    mediaRecorder.stop();
+    startBtn.disabled = false;
+    stopBtn.disabled = true;
+};
+</script>
+
+</body>
+</html>
