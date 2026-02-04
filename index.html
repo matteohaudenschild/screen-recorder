@@ -2,224 +2,321 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Screen Recorder – Simple & Free</title>
-
+<title>⚔️ CAESAR Screen Recorder</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
+
 <style>
-:root {
-    --bg: #0b0b0b;
-    --card: #161616;
-    --accent: #6366f1;
-    --danger: #ef4444;
-    --text: #ffffff;
-    --muted: #a1a1aa;
+body{
+  margin:0;
+  font-family:'Poppins',sans-serif;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  background:linear-gradient(135deg,#8e2de2,#c31432,#f7971e,#ffd200);
+  background-size:400% 400%;
+  animation:bg 18s ease infinite;
 }
 
-* {
-    box-sizing: border-box;
+@keyframes bg{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
 }
 
-body {
-    margin: 0;
-    min-height: 100vh;
-    background: radial-gradient(circle at top, #1c1c1c, #0b0b0b);
-    color: var(--text);
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.app{
+  width:100%;
+  max-width:1000px;
+  background:rgba(0,0,0,0.88);
+  border-radius:32px;
+  padding:48px;
+  box-shadow:0 40px 100px rgba(0,0,0,.95);
+  color:#fff;
+  border:1px solid rgba(255,215,0,.15);
 }
 
-.container {
-    width: 100%;
-    max-width: 900px;
-    background: var(--card);
-    padding: 32px;
-    border-radius: 18px;
-    box-shadow: 0 30px 80px rgba(0,0,0,0.7);
+h1{
+  margin:0;
+  text-align:center;
+  font-family:'Cinzel',serif;
+  font-size:2.8rem;
+  letter-spacing:2px;
+  background:linear-gradient(90deg,#ffd700,#ffb347,#c9a227);
+  background-clip:text;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  text-shadow:0 0 30px rgba(255,215,0,.25);
 }
 
-h1 {
-    margin-top: 0;
-    font-size: 2rem;
+.subtitle{
+  text-align:center;
+  margin-top:8px;
+  font-size:.95rem;
+  letter-spacing:1px;
+  opacity:.8;
 }
 
-p {
-    color: var(--muted);
-    line-height: 1.6;
+.controls{
+  display:flex;
+  justify-content:center;
+  gap:24px;
+  margin-top:36px;
 }
 
-.controls {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin-top: 24px;
+button{
+  padding:18px 44px;
+  font-size:1.1rem;
+  font-weight:600;
+  border:none;
+  border-radius:22px;
+  cursor:pointer;
+  transition:.3s;
+  box-shadow:0 12px 30px rgba(0,0,0,.5);
 }
 
-button {
-    padding: 14px 22px;
-    font-size: 16px;
-    font-weight: 600;
-    border-radius: 12px;
-    border: none;
-    cursor: pointer;
-    transition: transform .15s ease, opacity .2s ease;
+.start{
+  background:linear-gradient(135deg,#36d1dc,#5b86e5);
+  color:white;
 }
 
-button:hover {
-    transform: translateY(-1px);
+.start:hover{transform:translateY(-2px);}
+
+.start:disabled{
+  opacity:.5;
+  cursor:not-allowed;
 }
 
-button:disabled {
-    opacity: .5;
-    cursor: not-allowed;
+.stop{
+  background:linear-gradient(135deg,#ff416c,#ff4b2b);
+  color:white;
 }
 
-.start {
-    background: var(--accent);
-    color: white;
+.stop:hover{transform:translateY(-2px);}
+
+.stop:disabled{
+  opacity:.35;
+  cursor:not-allowed;
+  box-shadow:none;
+  filter:grayscale(40%);
 }
 
-.stop {
-    background: var(--danger);
-    color: white;
+.status{
+  text-align:center;
+  margin-top:18px;
+  font-weight:600;
+  letter-spacing:.5px;
 }
 
-.status {
-    margin-top: 16px;
-    font-size: 14px;
-    color: var(--muted);
+.hint{
+  margin-top:26px;
+  padding:16px;
+  border-radius:18px;
+  background:linear-gradient(135deg,rgba(255,215,0,.08),rgba(255,255,255,.03));
+  text-align:center;
+  font-size:.9rem;
+  border:1px solid rgba(255,215,0,.15);
 }
 
-.notice {
-    margin-top: 12px;
-    font-size: 13px;
-    color: #fbbf24;
-}
-
-video {
-    width: 100%;
-    margin-top: 24px;
-    border-radius: 14px;
-    background: black;
-    display: none;
-}
-
-.footer {
-    margin-top: 22px;
-    font-size: 12px;
-    text-align: center;
-    color: var(--muted);
+video{
+  width:100%;
+  margin-top:34px;
+  border-radius:24px;
+  display:none;
+  box-shadow:0 25px 60px rgba(0,0,0,.8);
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
-    <h1>🎥 Screen Recorder</h1>
-    <p>
-        Record your screen and browser audio directly in your browser.
-        No installation. No uploads. Everything stays on your device.
-    </p>
+<div class="app">
+  <h1>⚔️ CAESAR</h1>
+  <div class="subtitle">Imperial Screen Recording • Maximum Quality</div>
 
-    <div class="controls">
-        <button id="startBtn" class="start">Start Recording</button>
-        <button id="stopBtn" class="stop" disabled>Stop Recording</button>
-    </div>
+  <div class="controls">
+    <button id="startBtn" class="start">Start Recording</button>
+    <button id="stopBtn" class="stop" disabled>Stop</button>
+  </div>
 
-    <div id="status" class="status">Ready to record.</div>
-    <div class="notice">
-        🔊 To record system sound, select a <b>browser tab</b> and enable
-        <b>“Share tab audio”</b>.
-    </div>
+  <div class="hint">
+    👉 Choose <b>Entire Screen</b> and enable <b>System Audio</b><br>
+    Crisp video • Powerful sound • Imperial quality
+  </div>
 
-    <video id="preview" controls></video>
-
-    <div class="footer">
-        Works best in Chrome / Edge · HTTPS required
-    </div>
+  <div class="status" id="status">Idle</div>
+  <video id="preview" controls></video>
 </div>
 
 <script>
-let mediaRecorder;
-let recordedChunks = [];
+let recorder;
+let chunks=[];
+let audioCtx;
+let micStream;
+let analyser;
+let voiceDetector;
+let gameAudioGain;
+let isSpeaking=false;
+let voiceThreshold=0.02;
+let smoothingFactor=0.8;
 
-const startBtn = document.getElementById("startBtn");
-const stopBtn = document.getElementById("stopBtn");
-const preview = document.getElementById("preview");
-const statusText = document.getElementById("status");
+const startBtn=document.getElementById("startBtn");
+const stopBtn=document.getElementById("stopBtn");
+const statusEl=document.getElementById("status");
+const preview=document.getElementById("preview");
 
-startBtn.onclick = async () => {
-    try {
-        const screenStream = await navigator.mediaDevices.getDisplayMedia({
-            video: { frameRate: 30 },
-            audio: true
-        });
+startBtn.onclick=async()=>{
+  try{
+    const screenStream=await navigator.mediaDevices.getDisplayMedia({
+      video:{
+        frameRate:60,
+        width:window.screen.width,
+        height:window.screen.height
+      },
+      audio:true
+    });
 
-        const hasTabAudio = screenStream.getAudioTracks().length > 0;
+    micStream = await navigator.mediaDevices.getUserMedia({
+      audio:{
+        channelCount:2,
+        sampleRate:48000,
+        echoCancellation:false,
+        noiseSuppression:false,
+        autoGainControl:false
+      }
+    });
 
-        const micStream = await navigator.mediaDevices.getUserMedia({
-            audio: true
-        });
+    audioCtx=new AudioContext();
+    const source=audioCtx.createMediaStreamSource(screenStream);
+    const micSource=audioCtx.createMediaStreamSource(micStream);
 
-        if (!hasTabAudio) {
-            alert(
-                "IMPORTANT:\n\n" +
-                "To record system sound, please select a BROWSER TAB\n" +
-                "and enable 'Share tab audio'.\n\n" +
-                "Only microphone audio will be recorded."
-            );
-        }
+    // Voice detection setup
+    analyser=audioCtx.createAnalyser();
+    analyser.fftSize=256;
+    micSource.connect(analyser);
 
-        const tracks = [
-            ...screenStream.getVideoTracks(),
-            ...(hasTabAudio ? screenStream.getAudioTracks() : []),
-            ...micStream.getAudioTracks()
-        ];
+    // Game audio gain (for ducking)
+    gameAudioGain=audioCtx.createGain();
+    gameAudioGain.gain.value=1.0;
 
-        const combinedStream = new MediaStream(tracks);
+    // Microphone gain and processing
+    const micGain=audioCtx.createGain();
+    micGain.gain.value=2.0; // Boost mic moderately to make it dominant
 
-        recordedChunks = [];
-        mediaRecorder = new MediaRecorder(combinedStream);
+    const compressor=audioCtx.createDynamicsCompressor();
+    compressor.threshold.value=-12;
+    compressor.knee.value=8;
+    compressor.ratio.value=6;
+    compressor.attack.value=0.003;
+    compressor.release.value=0.1;
 
-        mediaRecorder.ondataavailable = e => {
-            if (e.data.size > 0) recordedChunks.push(e.data);
-        };
+    const destination=audioCtx.createMediaStreamDestination();
 
-        mediaRecorder.onstop = () => {
-            const blob = new Blob(recordedChunks, { type: "video/webm" });
-            const url = URL.createObjectURL(blob);
+    // Route game audio through duckable gain
+    source.connect(gameAudioGain);
+    gameAudioGain.connect(compressor);
 
-            preview.src = url;
-            preview.style.display = "block";
-            preview.play();
+    // Route processed mic directly
+    micSource.connect(micGain);
+    micGain.connect(compressor);
+    compressor.connect(destination);
 
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = "screen-recording.webm";
-            a.click();
+    // Start voice detection
+    startVoiceDetection();
 
-            statusText.textContent = "Recording finished. File downloaded.";
-        };
+    const finalStream=new MediaStream([
+      ...screenStream.getVideoTracks(),
+      ...destination.stream.getAudioTracks()
+    ]);
 
-        mediaRecorder.start();
-        startBtn.disabled = true;
-        stopBtn.disabled = false;
-        statusText.textContent = "Recording… Make sure tab audio is enabled.";
+    recorder=new MediaRecorder(finalStream,{
+      mimeType:"video/webm;codecs=vp8,opus",
+      videoBitsPerSecond:15000000,
+      audioBitsPerSecond:320000
+    });
 
-    } catch (err) {
-        statusText.textContent = "Error: " + err.message;
+    chunks=[];
+    recorder.ondataavailable=e=>e.data.size&&chunks.push(e.data);
+
+    recorder.onstop=()=>{
+      const blob=new Blob(chunks,{type:"video/webm"});
+      const url=URL.createObjectURL(blob);
+      preview.src=url;
+      preview.style.display="block";
+      preview.play();
+
+      const a=document.createElement("a");
+      a.href=url;
+      a.download="caesar-recording.webm";
+      a.click();
+
+      startBtn.disabled=false;
+      stopBtn.disabled=true;
+      statusEl.textContent="Stopped";
+    };
+
+    recorder.start();
+    startBtn.disabled=true;
+    stopBtn.disabled=false;
+    statusEl.textContent="Recording…";
+
+    screenStream.getVideoTracks()[0].onended=()=>{
+      if(recorder.state!=="inactive") recorder.stop();
     }
+
+  }catch(err){
+    alert("Recording failed: "+err.message);
+  }
 };
 
-stopBtn.onclick = () => {
-    mediaRecorder.stop();
-    startBtn.disabled = false;
-    stopBtn.disabled = true;
-    statusText.textContent = "Processing recording…";
+stopBtn.onclick=()=>{
+  if(recorder && recorder.state!=="inactive") recorder.stop();
+  if(voiceDetector) cancelAnimationFrame(voiceDetector);
 };
+
+function startVoiceDetection(){
+  const bufferLength=analyser.frequencyBinCount;
+  const dataArray=new Uint8Array(bufferLength);
+  
+  function detect(){
+    analyser.getByteFrequencyData(dataArray);
+    
+    // Calculate RMS (volume) of microphone
+    let sum=0;
+    for(let i=0;i<bufferLength;i++){
+      sum+=dataArray[i]*dataArray[i];
+    }
+    const rms=Math.sqrt(sum/bufferLength)/255;
+    
+    // Smooth the detection to avoid rapid switching
+    const smoothedRms=isSpeaking ? rms*smoothingFactor + (1-smoothingFactor)*voiceThreshold : rms;
+    
+    // Detect voice activity
+    const wasSpeaking=isSpeaking;
+    isSpeaking=smoothedRms>voiceThreshold;
+    
+    // Apply ducking when speaking
+    if(isSpeaking && !wasSpeaking){
+      // Just started speaking - duck game audio less aggressively
+      gameAudioGain.gain.setTargetAtTime(0.4, audioCtx.currentTime, 0.02);
+      statusEl.textContent="Recording… 🎤 Speaking";
+    } else if(!isSpeaking && wasSpeaking){
+      // Stopped speaking - restore game audio gradually
+      gameAudioGain.gain.setTargetAtTime(1.0, audioCtx.currentTime, 0.3);
+      statusEl.textContent="Recording…";
+    }
+    
+    // Auto-adjust threshold based on background noise
+    if(!isSpeaking && smoothedRms>0.001){
+      voiceThreshold=Math.min(0.05, voiceThreshold*0.999 + smoothedRms*0.001);
+    }
+    
+    voiceDetector=requestAnimationFrame(detect);
+  }
+  
+  detect();
+}
 </script>
 
 </body>
